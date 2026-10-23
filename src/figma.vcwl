@@ -1,0 +1,241 @@
+// Figma's furniture, drawn by hand: frames with their names above them, a selection with
+// handles and a size badge, red-line measurements, comment pins and a multiplayer cursor.
+
+import "./theme.vcwl"
+
+/// A frame on the canvas: its name (and size) above, its content in a bordered box.
+export component Frame(name: String, anchor: String, size: String = "") {
+    column(gap: 8px, id: anchor) {
+        style {
+            width: 100%
+        }
+        row(justify: between, align: center) {
+            span("#  {name}") {
+                style Kicker
+            }
+            span(size) {
+                style Kicker
+                style {
+                    color: #5d5a6b
+                }
+            }
+        }
+        box {
+            style {
+                position: relative
+                background: #16151c
+                border: 1px solid #2c2a35
+                padding: 36px
+                when viewport < 700px {
+                    padding: 20px
+                }
+            }
+            slot
+        }
+    }
+}
+
+/// Draws its content as the selected layer: pink outline, corner handles, size badge.
+export component Selected(size: String) {
+    box {
+        style {
+            position: relative
+            border: 1px solid #ff2bd6
+        }
+        slot
+        Handle(x: 0, y: 0)
+        Handle(x: 1, y: 0)
+        Handle(x: 0, y: 1)
+        Handle(x: 1, y: 1)
+        span(size) {
+            style {
+                position: absolute
+                bottom: -26px
+                left: 50%
+                margin-left: -50px
+                width: 100px
+                white-space: nowrap
+                text-align: center
+                font: "Inter", "Segoe UI", Arial, sans-serif
+                size: 11px
+                weight: 600
+                padding: 2px 0
+                radius: 3px
+                color: #121117
+                background: #ff2bd6
+            }
+        }
+    }
+}
+
+component Handle(x: Int, y: Int) {
+    box {
+        style {
+            position: absolute
+            width: 8px
+            height: 8px
+            background: #ffffff
+            border: 1px solid #ff2bd6
+            left: -5px
+            top: -5px
+        }
+        style if x == 1 {
+            left: auto
+            right: -5px
+        }
+        style if y == 1 {
+            top: auto
+            bottom: -5px
+        }
+    }
+}
+
+/// A vertical red-line between two things, with its distance.
+export component Measure(px: String) {
+    column(align: center, gap: 0) {
+        style {
+            height: 44px
+        }
+        box {
+            style {
+                width: 1px
+                grow: 1
+                background: #00f0ff
+            }
+        }
+        span(px) {
+            style {
+                font: "Inter", "Segoe UI", Arial, sans-serif
+                size: 11px
+                weight: 600
+                padding: 1px 5px
+                radius: 3px
+                color: #121117
+                background: #00f0ff
+            }
+        }
+        box {
+            style {
+                width: 1px
+                grow: 1
+                background: #00f0ff
+            }
+        }
+    }
+}
+
+/// A comment pin with a note next to it.
+export component Note(text: String) {
+    row(gap: 10px, align: start) {
+        style {
+            max-width: 300px
+        }
+        box {
+            style {
+                width: 30px
+                height: 30px
+                shrink: 0
+                radius: 15px
+                overflow: hidden
+                border: 2px solid #ff2bd6
+                background: #2a2140
+            }
+            image(src: "images/avatar.png", alt: "") {
+                style {
+                    width: 100%
+                    height: 100%
+                    fit: cover
+                }
+            }
+        }
+        column(gap: 2px) {
+            style {
+                padding: 8px 12px
+                background: #ffffff
+                radius: 8px
+            }
+            span("MoonRb1x") {
+                style {
+                    font: "Inter", "Segoe UI", Arial, sans-serif
+                    size: 12px
+                    weight: 700
+                    color: #121117
+                }
+            }
+            span(text) {
+                style {
+                    font: "Inter", "Segoe UI", Arial, sans-serif
+                    size: 13px
+                    color: #3a3845
+                    line-height: 1.35
+                }
+            }
+        }
+    }
+}
+
+/// His multiplayer cursor, gliding between a few spots every couple of seconds.
+export component Cursor(tick: Int) {
+    let spot = tick / 26 % 5
+
+    row(gap: 0, align: start, label: "") {
+        style {
+            position: absolute
+            left: 0
+            top: 0
+            z: 5
+            user-select: none
+            transition: transform 1400ms ease-in-out
+            transform: translate(120px, 90px)
+        }
+        style if spot == 1 {
+            transform: translate(640px, 160px)
+        }
+        style if spot == 2 {
+            transform: translate(820px, 420px)
+        }
+        style if spot == 3 {
+            transform: translate(300px, 470px)
+        }
+        style if spot == 4 {
+            transform: translate(520px, 300px)
+        }
+        image(src: "images/cursor.svg", alt: "") {
+            style {
+                width: 22px
+                height: 22px
+            }
+        }
+        span("MoonRb1x") {
+            style {
+                margin: 16px 0 0 -4px
+                font: "Inter", "Segoe UI", Arial, sans-serif
+                size: 12px
+                weight: 600
+                padding: 3px 8px
+                radius: 4px
+                color: #121117
+                background: #ff2bd6
+            }
+        }
+    }
+}
+
+/// One of his designs lying on the canvas as a frame, name above it.
+export component CanvasFrame(name: String, image: String, wide: Int) {
+    column(gap: 6px) {
+        span(name) {
+            style Kicker
+            style {
+                size: 11px
+            }
+        }
+        image(src: image, alt: "{name} UI") {
+            style {
+                display: block
+                border: 1px solid #2c2a35
+            }
+            style bind width: wide px
+        }
+    }
+}

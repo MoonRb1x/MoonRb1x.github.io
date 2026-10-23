@@ -1,0 +1,529 @@
+// MoonRb1x's portfolio, written in VCWL (https://vcwl.chteau.bzh).
+app "MoonRb1x · Roblox UI Designer"
+
+import "@web"
+import "./theme.vcwl"
+import "./data.vcwl"
+import "./glitch.vcwl"
+import "./pages/home.vcwl"
+import "./pages/work.vcwl"
+import "./pages/store.vcwl"
+import "./pages/contact.vcwl"
+
+font "Space Grotesk" from google weight 300..700
+font "JetBrains Mono" from google weight 400
+font "JetBrains Mono" from google weight 700
+font "Inter" from google weight 400..700
+
+component App {
+    state tick: Int = 0
+    state booting: Bool = true
+    state screen: Int = 900
+
+    // About 13 minutes of glitching, then it calms down. Nothing at all with reduced motion.
+    on mount {
+        screen = viewport_height()
+        if media_matches("(prefers-reduced-motion: reduce)") {
+            booting = false
+        } else {
+            // 300 batches of 30 ticks, so the browser isn't handed 9000 timers at once.
+            for i in 0..300 {
+                fetch sleep(i * 2700) {
+                    Ok(_) => {
+                        for j in 0..30 {
+                            fetch sleep(j * 90) {
+                                Ok(_) => {
+                                    tick += 1
+                                    if tick >= 22 {
+                                        booting = false
+                                    }
+                                }
+                                Err(_) => {}
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+            }
+        }
+    }
+
+    box {
+        style Page
+        // Figma's dotted canvas, barely there, fixed behind everything.
+        image(src: "images/canvas-dots.png", alt: "") {
+            style {
+                position: fixed
+                top: 0
+                left: 0
+                width: 100%
+                height: 100vh
+                fit: cover
+                user-select: none
+            }
+        }
+        if booting {
+            Boot(tick: tick) {
+                on skip {
+                    booting = false
+                }
+            }
+        }
+        Nav()
+        Layers()
+        column(gap: 0) {
+            style {
+                position: relative
+                padding-top: 56px
+                when viewport >= 1280px {
+                    padding-left: 240px
+                }
+            }
+            main(id: "top") {
+                // Tall enough that the footer sits at the bottom of short pages.
+                style bind min-height: screen - 112 px
+                routes {
+                    "/" => Home(tick: tick)
+                    "/work" => WorkPage()
+                    "/store" => StorePage()
+                    "/contact" => ContactPage(tick: tick)
+                    _ => Lost(tick: tick)
+                }
+                box {
+                    style {
+                        height: 96px
+                    }
+                }
+            }
+            Foot()
+        }
+    }
+}
+
+/// Figma's top bar: file name on the left, pages in the middle, the share button on the right.
+component Nav {
+    state open: Bool = false
+
+    nav(label: "Site") {
+        style Chrome
+        style {
+            position: fixed
+            top: 0
+            left: 0
+            width: 100%
+            z: 20
+            background: #1b1a22
+            border-bottom: 1px solid #2c2a35
+        }
+        row(justify: between, align: center) {
+            style {
+                height: 56px
+                padding: 0 12px 0 14px
+            }
+            link("", to: "/", label: "MoonRb1x, home") {
+                style {
+                    decoration: none
+                }
+                on click {
+                    open = false
+                }
+                row(gap: 10px, align: center) {
+                    box {
+                        style {
+                            width: 30px
+                            height: 30px
+                            radius: 6px
+                            overflow: hidden
+                            background: #2a2140
+                        }
+                        image(src: "images/avatar.png", alt: "") {
+                            style {
+                                width: 100%
+                                height: 100%
+                                fit: cover
+                            }
+                        }
+                    }
+                    span("Drafts  /") {
+                        style {
+                            color: #9b98a8
+                            when viewport < 500px {
+                                display: none
+                            }
+                        }
+                    }
+                    span("MoonRb1x — Portfolio") {
+                        style {
+                            color: #ffffff
+                            weight: 600
+                            size: 13px
+                        }
+                    }
+                }
+            }
+            row(gap: 4px, align: center) {
+                style {
+                    when viewport < 760px {
+                        display: none
+                    }
+                }
+                NavLinks()
+            }
+            row(gap: 10px, align: center) {
+                style {
+                    when viewport < 760px {
+                        display: none
+                    }
+                }
+                box {
+                    style {
+                        width: 28px
+                        height: 28px
+                        radius: 50%
+                        overflow: hidden
+                        border: 2px solid #ff2bd6
+                        background: #2a2140
+                    }
+                    image(src: "images/avatar.png", alt: "") {
+                        style {
+                            width: 100%
+                            height: 100%
+                            fit: cover
+                        }
+                    }
+                }
+                link("Commission", to: "/contact") {
+                    style {
+                        font: "Inter", "Segoe UI", Arial, sans-serif
+                        size: 13px
+                        weight: 600
+                        padding: 7px 14px
+                        radius: 6px
+                        color: #121117
+                        background: #ff2bd6
+                        decoration: none
+                        when hover {
+                            background: #ff66e2
+                        }
+                    }
+                }
+            }
+            button(if open { "Close" } else { "Menu" }, label: "Menu", pressed: open) {
+                style Chrome
+                style {
+                    display: none
+                    padding: 8px 14px
+                    color: #ffffff
+                    background: #2c2a35
+                    border: none
+                    radius: 6px
+                    cursor: pointer
+                    when viewport < 760px {
+                        display: block
+                    }
+                }
+                on click {
+                    open = !open
+                }
+            }
+        }
+        if open {
+            column(gap: 2px) {
+                style {
+                    padding: 4px 8px 12px
+                    when viewport >= 760px {
+                        display: none
+                    }
+                }
+                NavLinks() {
+                    on picked {
+                        open = false
+                    }
+                }
+            }
+        }
+    }
+}
+
+component NavLinks {
+    event picked
+
+    PageLink(text: "Home", to: "/") {
+        on picked {
+            emit picked
+        }
+    }
+    PageLink(text: "Work", to: "/work") {
+        on picked {
+            emit picked
+        }
+    }
+    PageLink(text: "Store", to: "/store") {
+        on picked {
+            emit picked
+        }
+    }
+    PageLink(text: "Contact", to: "/contact") {
+        on picked {
+            emit picked
+        }
+    }
+}
+
+component PageLink(text: String, to: String) {
+    event picked
+
+    link(text, to: to, current: route == to) {
+        style {
+            font: "Inter", "Segoe UI", Arial, sans-serif
+            size: 13px
+            color: #9b98a8
+            decoration: none
+            padding: 8px 12px
+            radius: 6px
+            when hover {
+                color: #ffffff
+                background: #2c2a35
+            }
+            when viewport < 760px {
+                size: 16px
+                padding: 12px
+            }
+        }
+        style if route == to {
+            color: #ffffff
+            background: #2c2a35
+        }
+        on click {
+            emit picked
+        }
+    }
+}
+
+struct Layer {
+    name: String,
+    anchor: String,
+}
+
+fn layers(path: String) -> [Layer] {
+    if path == "/" {
+        [
+            Layer { name: "Intro", anchor: "hero" },
+            Layer { name: "Numbers", anchor: "numbers" },
+            Layer { name: "Selected work", anchor: "work" },
+            Layer { name: "How I work", anchor: "workflow" },
+            Layer { name: "Services", anchor: "services" },
+            Layer { name: "Commission", anchor: "commission" },
+        ]
+    } else {
+        [Layer { name: "Page", anchor: "top" }]
+    }
+}
+
+/// Figma's left panel: the site's pages, then the frames on this one (click to jump).
+component Layers {
+    aside(label: "Layers") {
+        style Chrome
+        style {
+            position: fixed
+            left: 0
+            top: 56px
+            height: 100vh
+            width: 240px
+            z: 10
+            padding: 14px 8px
+            background: #1b1a22
+            border-right: 1px solid #2c2a35
+            when viewport < 1280px {
+                display: none
+            }
+        }
+        column(gap: 2px) {
+            span("Pages") {
+                style PanelHead
+            }
+            PanelRow(text: "Home", to: "/")
+            PanelRow(text: "Work", to: "/work")
+            PanelRow(text: "Store", to: "/store")
+            PanelRow(text: "Contact", to: "/contact")
+            box {
+                style {
+                    height: 1px
+                    margin: 12px 0
+                    background: #2c2a35
+                }
+            }
+            span("Layers") {
+                style PanelHead
+            }
+            for l in layers(route) key l.anchor {
+                link("#   {l.name}", href: "#{l.anchor}") {
+                    style PanelItem
+                }
+            }
+        }
+    }
+}
+
+component PanelRow(text: String, to: String) {
+    link(if route == to { "✓   {text}" } else { "     {text}" }, to: to, current: route == to) {
+        style PanelItem
+        style if route == to {
+            color: #ffffff
+            weight: 600
+        }
+    }
+}
+
+style PanelHead {
+    padding: 4px 10px 8px
+    color: #ffffff
+    weight: 600
+}
+
+style PanelItem {
+    display: block
+    padding: 7px 10px
+    radius: 4px
+    color: #b9b6c4
+    decoration: none
+    white-space: pre
+    when hover {
+        background: #2c2a35
+        color: #ffffff
+    }
+}
+
+component Foot {
+    footer {
+        style Chrome
+        style {
+            border-top: 1px solid #2c2a35
+            background: #1b1a22
+        }
+        row(justify: between, align: center, wrap: yes, gap: 12px) {
+            style Wrap
+            style {
+                padding-y: 18px
+            }
+            span("© 2026 MoonRb1x · Figma when useful, built in Roblox Studio")
+            row(gap: 6px, align: center) {
+                span("This site is written in")
+                link("VCWL ↗", href: "https://vcwl.chteau.bzh") {
+                    style {
+                        color: #00f0ff
+                        weight: 600
+                        decoration: none
+                        when hover {
+                            color: #ff2bd6
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+component Lost(tick: Int) {
+    column(gap: 24px, align: start) {
+        style Wrap
+        style {
+            padding-y: 120px
+        }
+        span("ERROR 404 · SIGNAL LOST") {
+            style Kicker
+        }
+        GlitchText(text: "Nothing here.", tick: tick)
+        link("Back to the start", to: "/") {
+            style ButtonPink
+        }
+    }
+}
+
+struct BootLine {
+    n: Int,
+    text: String,
+}
+
+fn boot_lines() -> [BootLine] {
+    [
+        BootLine { n: 0, text: "> opening MoonRb1x — Portfolio.fig" },
+        BootLine { n: 1, text: "> loading figma components ..... ok" },
+        BootLine { n: 2, text: "> syncing roblox studio ........ ok" },
+        BootLine { n: 3, text: "> injecting glitch.exe .......... ok" },
+    ]
+}
+
+/// The boot screen: a terminal printing itself, a progress bar, then a glitch-out.
+component Boot(tick: Int) {
+    event skip
+
+    let lines = boot_lines()
+
+    button("", label: "Skip intro") {
+        style {
+            position: fixed
+            inset: 0
+            z: 200
+            width: 100%
+            height: 100%
+            border: none
+            padding: 0
+            cursor: pointer
+            background: #07060b
+            transition: opacity 350ms ease-out
+        }
+        style if tick >= 17 {
+            opacity: 0
+        }
+        on click {
+            emit skip
+        }
+        GlitchBars(tick: if tick >= 14 { tick + 32 * (tick % 2) } else { 0 }, count: 14)
+        column(gap: 10px, align: start, justify: center) {
+            style Mono
+            style {
+                height: 100%
+                max-width: 560px
+                margin: 0 auto
+                padding: 0 24px
+                text-align: left
+                size: 15px
+                color: #00f0ff
+            }
+            for l in lines key l.n {
+                if tick >= 1 + l.n * 3 {
+                    span(l.text) {
+                        style if l.n == 0 {
+                            color: #ff2bd6
+                            weight: 700
+                        }
+                    }
+                }
+            }
+            box {
+                style {
+                    width: 100%
+                    height: 6px
+                    margin: 14px 0 0
+                    background: #1d1928
+                    radius: 0
+                    overflow: hidden
+                }
+                box {
+                    style {
+                        height: 100%
+                        background: #ff2bd6
+                    }
+                    style bind width: (tick * 8).min(100) %
+                }
+            }
+            span("{(tick * 8).min(100)}% · click to skip") {
+                style Muted
+                style {
+                    size: 12px
+                }
+            }
+        }
+    }
+}

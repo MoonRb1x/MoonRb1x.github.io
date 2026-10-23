@@ -1,0 +1,155 @@
+// The site is his Figma file: a dark canvas, panels in Figma's greys, frames labelled in small
+// Inter, pink for selection, cyan for measurements, violet for components.
+
+export style Page {
+    background: #121117
+    color: #e8e6ef
+    min-height: 100vh
+    font: "Space Grotesk", "Segoe UI", Arial, sans-serif
+    size: 16px
+    line-height: 1.55
+}
+
+export style Wrap {
+    width: 100%
+    max-width: 1180px
+    margin: 0 auto
+    padding: 0 32px
+    when viewport < 700px {
+        padding: 0 16px
+    }
+}
+
+export style Chrome {
+    font: "Inter", "Segoe UI", Arial, sans-serif
+    size: 12px
+    line-height: 1.4
+    color: #9b98a8
+}
+
+export style Mono {
+    font: "JetBrains Mono", Consolas, monospace
+}
+
+/// Small grey label, like the name Figma prints above a frame.
+export style Kicker {
+    font: "Inter", "Segoe UI", Arial, sans-serif
+    size: 12px
+    weight: 500
+    color: #9b98a8
+}
+
+export style Shout {
+    margin: 0
+    size: 96px
+    weight: 700
+    line-height: 1
+    letter-spacing: -3px
+    when viewport < 900px {
+        size: 68px
+    }
+    when viewport < 500px {
+        size: 48px
+        letter-spacing: -1px
+    }
+}
+
+export style Title {
+    margin: 0
+    size: 44px
+    weight: 700
+    line-height: 1.05
+    letter-spacing: -1.5px
+    color: #ffffff
+    when viewport < 700px {
+        size: 32px
+    }
+}
+
+export style Muted {
+    color: #9b98a8
+}
+
+export style Pink {
+    color: #ff2bd6
+}
+
+export style Cyan {
+    color: #00f0ff
+}
+
+export style Card {
+    background: #1b1a22
+    border: 1px solid #2c2a35
+    radius: 2px
+}
+
+/// Hovering a card outlines it in the selection colour, like hovering a layer in Figma.
+export style Lift {
+    transition: background 120ms ease-out
+    when hover {
+        border: 1px solid #ff2bd6
+        background: #1f1d28
+    }
+}
+
+export style ButtonPink {
+    display: inline-block
+    font: "Inter", "Segoe UI", Arial, sans-serif
+    size: 15px
+    padding: 12px 20px
+    background: #ff2bd6
+    color: #121117
+    weight: 600
+    decoration: none
+    radius: 6px
+    border: none
+    cursor: pointer
+    transition: background 120ms ease-out
+    when hover {
+        background: #ff66e2
+    }
+}
+
+export style ButtonGhost {
+    display: inline-block
+    font: "Inter", "Segoe UI", Arial, sans-serif
+    size: 15px
+    padding: 11px 19px
+    color: #ffffff
+    weight: 500
+    decoration: none
+    background: #1b1a22
+    border: 1px solid #3a3845
+    radius: 6px
+    cursor: pointer
+    transition: background 120ms ease-out
+    when hover {
+        border: 1px solid #00f0ff
+        background: #22202b
+    }
+}
+
+/// A component instance chip: violet, like Figma's.
+export style Tag {
+    font: "Inter", "Segoe UI", Arial, sans-serif
+    size: 12px
+    weight: 500
+    padding: 2px 7px
+    radius: 3px
+    color: #c49bff
+    background: #2a2140
+}
+
+export style Reveal {
+    transition: opacity 600ms ease-out, transform 700ms ease-out
+    when appear {
+        opacity: 0
+        transform: translateY(20px)
+    }
+}
+
+export style Shot {
+    width: 100%
+    display: block
+}

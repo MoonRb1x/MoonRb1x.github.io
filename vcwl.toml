@@ -1,0 +1,9 @@
+# VCWL project
+name = "moonrb1x-portfolio"
+entry = "src/main.vcwl"
+out = "dist"
+description = "MoonRb1x: Roblox UI designer. Shops, inventories, menus and HUDs built in Roblox Studio, with Figma used when it helps."
+theme_color = "#ff2bd6"
+icon = "images/avatar.png"
+touch_icon = "images/avatar.png"
+image = "images/work/08.png"
