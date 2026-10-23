@@ -382,7 +382,7 @@ export async function createCanvasHost(canvas, app, render, opts = {}) {
             break;
           }
           case OUT.TITLE:
-            doc.title = b.str();
+            setTitle(doc, b.str());
             break;
           case OUT.NAVIGATE:
             navigate(b.str());
@@ -1209,6 +1209,27 @@ export async function createCanvasHost(canvas, app, render, opts = {}) {
     host.call((x) => x.set_route(host.writeIO(path)));
     input(() => r.scroll_to_top());
   };
+  /** Delivers `value` (as JSON) to every mounted `on js "<name>"` handler of the app. */
+  host.dispatch = (name, value) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(JSON.stringify(value) ?? "null");
+    } catch (e) {
+      console.warn(`[vcwl] event "${name}" ignored: its value cannot be encoded as JSON (${e.message})`);
+      return;
+    }
+    host.call((x) => {
+      const json = host.json;
+      json.length = 0;
+      json.push(parsed);
+      try {
+        const failed = x.js_event(host.writeIO(String(name)));
+        if (failed) console.warn(`[vcwl] event "${name}" ignored by ${failed} handler(s): its value does not match their type`);
+      } finally {
+        json.length = 0;
+      }
+    });
+  };
   host.showError = (msg) => {
     host.error = msg;
     replay();
@@ -1259,6 +1280,24 @@ export function showError(doc, msg) {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (msg) drawError(ctx, canvas.width, canvas.height, "VCWL " + msg);
+}
+
+/** Prefix of a TITLE output that is the page's description (`meta(description: ...)`). */
+export const DESCRIPTION_MARK = "\u0001";
+
+/** Applies a TITLE output: the document's title, or its `<meta name="description">`. */
+export function setTitle(doc, s) {
+  if (!s.startsWith(DESCRIPTION_MARK)) {
+    doc.title = s;
+    return;
+  }
+  let meta = doc.querySelector('meta[name="description"]');
+  if (!meta) {
+    meta = doc.createElement("meta");
+    meta.name = "description";
+    doc.head.append(meta);
+  }
+  meta.content = s.slice(DESCRIPTION_MARK.length);
 }
 
 /** The URL of route `path` with path routing: one directory per route below the app's root. */

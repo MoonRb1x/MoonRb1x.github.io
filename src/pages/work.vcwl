@@ -1,0 +1,313 @@
+import "../theme.vcwl"
+import "../data.vcwl"
+
+export component WorkPage {
+    state kind: String = "All"
+    state open: Int = -1
+
+    let shown = works_of(kind)
+
+    section(label: "Work") {
+        style Wrap
+        style {
+            padding-top: 72px
+        }
+        column(gap: 36px) {
+            column(gap: 12px) {
+                span("Portfolio") {
+                    style Kicker
+                }
+                heading("Work", level: 1) {
+                    style Shout
+                    style {
+                        color: #ffffff
+                    }
+                }
+                paragraph("Every project was built in Roblox Studio. Horror Settings and Pixel Main Menu were also designed in Figma. Click a project to see it full size.") {
+                    style Muted
+                    style {
+                        margin: 0
+                        size: 18px
+                        max-width: 620px
+                    }
+                }
+            }
+            row(gap: 8px, wrap: yes) {
+                for k in kinds() key k {
+                    button(k, pressed: k == kind) {
+                        style Filter
+                        style if k == kind {
+                            color: #07060b
+                            background: #ff2bd6
+                            border: 2px solid #ff2bd6
+                        }
+                        on click {
+                            kind = k
+                        }
+                    }
+                }
+            }
+            grid(gap: 24px) {
+                style {
+                    columns: 2
+                    when viewport < 800px {
+                        columns: 1
+                    }
+                }
+                for w in shown key w.id {
+                    WorkCard(work: w) {
+                        on open(id) {
+                            open = id
+                        }
+                    }
+                }
+            }
+        }
+        Lightbox(list: shown, id: open) {
+            on pick(id) {
+                open = id
+            }
+        }
+    }
+}
+
+style Filter {
+    font: "JetBrains Mono", Consolas, monospace
+    size: 14px
+    padding: 9px 18px
+    color: #e9e6f2
+    background: #07060b
+    border: 2px solid #2a2438
+    radius: 0
+    cursor: pointer
+    transition: background 200ms ease-out, color 200ms ease-out
+    when hover {
+        color: #00f0ff
+    }
+}
+
+/// One project: the screenshot on a dark stage, its name and what kind of UI it is.
+export component WorkCard(work: Work) {
+    event open(Int)
+
+    article(label: work.title) {
+        style Card
+        style Lift
+        style Reveal
+        style {
+            padding: 14px
+            cursor: pointer
+        }
+        button("", label: "Open {work.title} full size") {
+            style {
+                display: block
+                width: 100%
+                padding: 0
+                border: none
+                background: transparent
+                cursor: pointer
+            }
+            on click {
+                emit open(work.id)
+            }
+            box {
+                style {
+                    display: block
+                    padding: 22px
+                    radius: 0
+                    background: #16141f
+                }
+                image(src: work.image, alt: "{work.title} UI") {
+                    style Shot
+                    style {
+                        max-height: 420px
+                        fit: contain
+                    }
+                }
+            }
+        }
+        row(justify: between, align: center, gap: 12px) {
+            style {
+                padding: 16px 8px 6px
+            }
+            column(gap: 2px) {
+                span(work.title) {
+                    style {
+                        color: #ffffff
+                        weight: 700
+                        size: 20px
+                    }
+                }
+                span(work.blurb) {
+                    style Muted
+                    style {
+                        size: 14px
+                    }
+                }
+            }
+            column(gap: 8px, align: end) {
+                span(work.kind) {
+                    style Tag
+                    style {
+                        shrink: 0
+                    }
+                }
+                ToolTag(tool: work.tool)
+            }
+        }
+    }
+}
+
+fn index_of(list: [Work], id: Int) -> Int {
+    var at = -1
+    for i in 0..list.len() {
+        if list[i].id == id {
+            at = i
+        }
+    }
+    at
+}
+
+/// Full-screen viewer for the project with this id (-1: closed), with previous / next.
+export component Lightbox(list: [Work], id: Int) {
+    event pick(Int)
+
+    let at = index_of(list, id)
+
+    if at >= 0 {
+        box(label: "Project viewer") {
+            style {
+                position: fixed
+                inset: 0
+                z: 100
+                background: #05040af2
+                padding: 88px 24px 24px
+                transition: opacity 250ms ease-out
+                when appear {
+                    opacity: 0
+                }
+            }
+            column(gap: 18px, align: center, justify: center) {
+                style {
+                    height: 100%
+                }
+                row(justify: between, align: center) {
+                    style {
+                        width: 100%
+                        max-width: 1100px
+                    }
+                    column(gap: 0) {
+                        span(list[at].title) {
+                            style {
+                                color: #ffffff
+                                weight: 700
+                                size: 22px
+                            }
+                        }
+                        span("{at + 1} / {list.len()} · {list[at].kind}") {
+                            style Kicker
+                        }
+                    }
+                    button("✕", label: "Close") {
+                        style ViewerButton
+                        on click {
+                            emit pick(-1)
+                        }
+                    }
+                }
+                box {
+                    style {
+                        display: block
+                        padding: 8px
+                        max-width: 100%
+                        max-height: 60vh
+                        background: #ff2bd6
+                    }
+                    image(src: list[at].image, alt: "{list[at].title} UI, full size") {
+                        style {
+                            display: block
+                            max-width: 100%
+                            max-height: 58vh
+                            fit: contain
+                            radius: 0
+                            transition: transform 500ms spring, opacity 300ms ease-out
+                            when appear {
+                                opacity: 0
+                                transform: scale(0.94)
+                            }
+                        }
+                    }
+                }
+                paragraph(list[at].blurb) {
+                    style Muted
+                    style {
+                        margin: 0
+                        max-width: 640px
+                        text-align: center
+                    }
+                }
+                row(gap: 12px) {
+                    button("← Prev", label: "Previous project") {
+                        style ViewerButton
+                        on click {
+                            emit pick(list[(at + list.len() - 1) % list.len()].id)
+                        }
+                    }
+                    button("Next →", label: "Next project") {
+                        style ViewerButton
+                        on click {
+                            emit pick(list[(at + 1) % list.len()].id)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+component ToolTag(tool: String) {
+    row(gap: 6px, align: center) {
+        style {
+            font: "Inter", "Segoe UI", Arial, sans-serif
+            size: 11px
+            weight: 600
+            padding: 4px 7px
+            color: #e8e6ef
+            background: #24212e
+            border: 1px solid #3a3845
+            radius: 3px
+            shrink: 0
+        }
+        if tool == "Figma" {
+            image(src: "images/figma.svg", alt: "Figma") {
+                style {
+                    width: 13px
+                    height: 13px
+                }
+            }
+            span("Figma")
+        } else {
+            image(src: "images/roblox-studio.svg", alt: "Roblox Studio") {
+                style {
+                    width: 13px
+                    height: 13px
+                }
+            }
+            span("Studio")
+        }
+    }
+}
+
+style ViewerButton {
+    font: "JetBrains Mono", Consolas, monospace
+    size: 15px
+    padding: 10px 18px
+    color: #ffffff
+    background: #15121f
+    border: 1px solid #00f0ff
+    radius: 0
+    cursor: pointer
+    when hover {
+        background: #00f0ff22
+    }
+}

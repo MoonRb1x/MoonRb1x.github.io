@@ -1,0 +1,114 @@
+// Everything you'd want to edit lives here: links, your work, your Creator Store items.
+
+export fn discord_name() -> String {
+    "moonrb1x"
+}
+
+export fn roblox_url() -> String {
+    "https://www.roblox.com/users/1274097373/profile"
+}
+
+export fn creator_store_url() -> String {
+    "https://create.roblox.com/store/assets?creatorName=MoonRb1x&creatorType=User"
+}
+
+/// Put your X profile link here, e.g. "https://x.com/yourname". Leave it empty to hide the button.
+export fn x_url() -> String {
+    ""
+}
+
+export struct Work {
+    id: Int,
+    title: String,
+    kind: String,
+    blurb: String,
+    image: String,
+    w: Int,
+    h: Int,
+    tool: String,
+}
+
+export fn works() -> [Work] {
+    [
+        Work { id: 8, title: "Exclusive Shop", kind: "Shops", blurb: "A bright pass shop with chunky outlines, tiled backgrounds and clear prices.", image: "images/work/08.png", w: 940, h: 589, tool: "Studio" },
+        Work { id: 10, title: "Daily Rewards", kind: "Systems", blurb: "Seven days of rewards, with the best prize waiting at the end.", image: "images/work/10.png", w: 763, h: 493, tool: "Studio" },
+        Work { id: 9, title: "Card Index", kind: "Systems", blurb: "A collection screen for tracking cards, variants and progress.", image: "images/work/09.png", w: 903, h: 457, tool: "Studio" },
+        Work { id: 5, title: "Pet Inventory", kind: "Systems", blurb: "A pet grid with quick search, favourites and a clear equip panel.", image: "images/work/05.png", w: 1039, h: 604, tool: "Studio" },
+        Work { id: 1, title: "Volume Settings", kind: "Menus", blurb: "A straightforward sound settings panel with controls for each channel.", image: "images/work/01.png", w: 861, h: 540, tool: "Studio" },
+        Work { id: 6, title: "Horror Settings", kind: "Menus", blurb: "A rough, brushy settings screen for a horror game, with sliders and keybinds.", image: "images/work/06.png", w: 976, h: 731, tool: "Figma" },
+        Work { id: 4, title: "Explosive Store", kind: "Shops", blurb: "A rarity-based store with a different colour and glow for each tier.", image: "images/work/04.png", w: 675, h: 557, tool: "Studio" },
+        Work { id: 3, title: "Gamepass Store", kind: "Shops", blurb: "A compact pass store built around a featured VIP card.", image: "images/work/03.png", w: 768, h: 567, tool: "Studio" },
+        Work { id: 2, title: "Music Player", kind: "HUD", blurb: "A small music player with shuffle, repeat and a scrub bar.", image: "images/work/02.png", w: 384, h: 213, tool: "Studio" },
+        Work { id: 7, title: "Pixel Main Menu", kind: "HUD", blurb: "A pixel-style menu with colourful buttons and chunky bevels.", image: "images/work/07.png", w: 272, h: 360, tool: "Figma" },
+    ]
+}
+
+fn contains_work(list: [Work], id: Int) -> Bool {
+    for work in list {
+        if work.id == id {
+            return true
+        }
+    }
+    false
+}
+
+fn add_featured(list: [Work], work: Work) -> [Work] {
+    if list.len() < 3 && !contains_work(list, work.id) {
+        list.push(work)
+    } else {
+        list
+    }
+}
+
+export fn featured_works(seed: Int) -> [Work] {
+    let all = works()
+    var chosen: [Work] = []
+    var value = seed
+    for attempt in 0..40 {
+        value = (value * 48271 + attempt + 1) % 2147483647
+        chosen = add_featured(chosen, all[value % all.len()])
+    }
+    chosen
+}
+
+export fn kinds() -> [String] {
+    ["All", "Shops", "Systems", "Menus", "HUD"]
+}
+
+export fn works_of(kind: String) -> [Work] {
+    var out: [Work] = []
+    for w in works() {
+        if kind == "All" || w.kind == kind {
+            out = out.push(w)
+        }
+    }
+    out
+}
+
+export struct Item {
+    name: String,
+    kind: String,
+    blurb: String,
+    features: [String],
+    image: String,
+    url: String,
+}
+
+export fn items() -> [Item] {
+    [
+        Item {
+            name: "Notify+",
+            kind: "Plugin · Module",
+            blurb: "A lightweight, customizable notification system for Roblox, easy to set up in any game.",
+            features: [
+                "Notification types with custom colours",
+                "Smart duplicate grouping: [2x], [3x]...",
+                "Four announcement styles with avatars and verified badges",
+                "Smooth animations and automatic stacking",
+                "Client and server support, one-command install",
+            ],
+            image: "images/store/notify.png",
+            url: "https://create.roblox.com/store/asset/84966499826087",
+        },
+    ]
+}

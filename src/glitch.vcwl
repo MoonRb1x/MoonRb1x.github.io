@@ -1,0 +1,128 @@
+// The glitch: one clock in App ticks every 100ms; everything here is a pure function of the tick,
+// so the glitch costs one state change per tick and nothing when reduced motion is on.
+
+import "./theme.vcwl"
+
+/// A cheap deterministic hash: the same tick always glitches the same way.
+export fn noise(n: Int) -> Int {
+    var x = n * 1103515245 + 12345
+    x = x / 65536 % 32768
+    if x < 0 { -x } else { x }
+}
+
+/// True during the short bursts: three ticks out of every 32, plus an odd stray one.
+export fn bursting(tick: Int) -> Bool {
+    tick > 0 && (tick % 32 < 3 || tick % 53 == 17)
+}
+
+fn shift(tick: Int, salt: Int, span: Int) -> Int {
+    if bursting(tick) { noise(tick * 31 + salt) % (span * 2 + 1) - span } else { 0 }
+}
+
+/// Big text split into cyan and pink copies that jump apart during bursts.
+export component GlitchText(text: String, tick: Int) {
+    let dx = shift(tick, 1, 14)
+    let dy = shift(tick, 2, 4)
+
+    stack {
+        style {
+            position: relative
+            display: block
+        }
+        heading(text, level: 1) {
+            style Shout
+            style GlitchLayer
+            style {
+                color: #00f0ff
+            }
+            style bind left: -3 + dx px
+            style bind top: dy px
+        }
+        heading(text, level: 1) {
+            style Shout
+            style GlitchLayer
+            style {
+                color: #ff2bd6
+            }
+            style bind left: 3 - dx px
+            style bind top: 0 - dy px
+        }
+        heading(text, level: 1) {
+            style Shout
+            style {
+                position: relative
+                white-space: nowrap
+                color: #ffffff
+            }
+            style bind left: dx / 3 px
+        }
+    }
+}
+
+style GlitchLayer {
+    position: absolute
+    top: 0
+    left: 0
+    margin: 0
+    opacity: 0.85
+    user-select: none
+    white-space: nowrap
+}
+
+export struct Bar {
+    id: Int,
+    top: Int,
+    left: Int,
+    width: Int,
+    height: Int,
+    tone: Int,
+}
+
+fn bars(tick: Int, count: Int) -> [Bar] {
+    var out: [Bar] = []
+    if bursting(tick) {
+        for k in 0..count {
+            let n = noise(tick * 97 + k * 13)
+            out = out.push(Bar {
+                id: k,
+                top: n % 96,
+                left: noise(n) % 80,
+                width: 8 + noise(n + 1) % 45,
+                height: 1 + noise(n + 2) % 7,
+                tone: k % 3,
+            })
+        }
+    }
+    out
+}
+
+/// Pink, cyan and purple pixel blocks flashed over whatever contains it (position it relative).
+export component GlitchBars(tick: Int, count: Int = 9) {
+    box(label: "") {
+        style {
+            position: absolute
+            inset: 0
+            overflow: hidden
+            z: 3
+        }
+        for b in bars(tick, count) key b.id {
+            box {
+                style {
+                    position: absolute
+                    opacity: 0.85
+                    background: #ff2bd6
+                }
+                style if b.tone == 1 {
+                    background: #00f0ff
+                }
+                style if b.tone == 2 {
+                    background: #8a2be2
+                }
+                style bind top: b.top %
+                style bind left: b.left %
+                style bind width: b.width %
+                style bind height: b.height %
+            }
+        }
+    }
+}

@@ -1,0 +1,164 @@
+import "../theme.vcwl"
+import "../data.vcwl"
+
+export component StorePage {
+    section(label: "Creator Store") {
+        style Wrap
+        style {
+            padding-top: 72px
+        }
+        column(gap: 36px) {
+            column(gap: 12px) {
+                span("Roblox Creator Store") {
+                    style Kicker
+                }
+                heading("Store", level: 1) {
+                    style Shout
+                    style {
+                        color: #ffffff
+                    }
+                }
+                paragraph("Small Roblox systems and assets for other developers. More are on the way.") {
+                    style Muted
+                    style {
+                        margin: 0
+                        size: 18px
+                        max-width: 620px
+                    }
+                }
+            }
+            grid(gap: 22px) {
+                style {
+                    columns: 3
+                    when viewport < 1000px {
+                        columns: 2
+                    }
+                    when viewport < 640px {
+                        columns: 1
+                    }
+                }
+                for it in items() key it.name {
+                    ItemCard(item: it)
+                }
+                Soon()
+            }
+            link("All my assets on the Creator Store ↗", href: creator_store_url()) {
+                style ButtonGhost
+                style {
+                    align-self: start
+                }
+            }
+        }
+    }
+}
+
+component ItemCard(item: Item) {
+    article(label: item.name) {
+        style Card
+        style Lift
+        style Reveal
+        style {
+            padding: 14px
+        }
+        column(gap: 16px) {
+            image(src: item.image, alt: "{item.name} icon") {
+                style Shot
+            }
+            column(gap: 10px) {
+                style {
+                    padding: 0 8px 8px
+                }
+                row(justify: between, align: center, gap: 8px) {
+                    span(item.name) {
+                        style {
+                            color: #ffffff
+                            weight: 700
+                            size: 24px
+                        }
+                    }
+                    span(item.kind) {
+                        style Tag
+                    }
+                }
+                span(item.blurb) {
+                    style Muted
+                    style {
+                        size: 15px
+                    }
+                }
+                list {
+                    style {
+                        margin: 0
+                        padding: 0
+                        list-style: none
+                    }
+                    for f in item.features key f {
+                        item {
+                            style {
+                                size: 14px
+                                padding: 3px 0
+                                color: #cfc9dc
+                            }
+                            span("▸ ") {
+                                style Cyan
+                            }
+                            text(f)
+                        }
+                    }
+                }
+                link("Get it on the Creator Store ↗", href: item.url) {
+                    style ButtonPink
+                    style {
+                        text-align: center
+                        margin: 8px 0 0
+                    }
+                }
+            }
+        }
+    }
+}
+
+component Soon {
+    column(gap: 12px, align: center, justify: center) {
+        style {
+            min-height: 320px
+            padding: 28px
+            text-align: center
+            border: 1px dashed #3a3150
+            radius: 0
+        }
+        span("+") {
+            style Mono
+            style {
+                size: 48px
+                color: #ff2bd6
+                line-height: 1
+            }
+        }
+        span("More drops soon") {
+            style {
+                color: #ffffff
+                weight: 700
+                size: 19px
+            }
+        }
+        span("UI kits, icon packs and systems are on the way.") {
+            style Muted
+            style {
+                size: 14px
+            }
+        }
+        button("", label: "itch.io store coming soon", disabled: true) {
+            style ButtonGhost
+            row(gap: 8px, align: center) {
+                image(src: "images/itch.svg", alt: "itch.io") {
+                    style {
+                        width: 18px
+                        height: 18px
+                    }
+                }
+                span("Coming soon on itch.io")
+            }
+        }
+    }
+}
