@@ -151,7 +151,7 @@ component Soon {
         button("", label: "itch.io store coming soon", disabled: true) {
             style ButtonGhost
             row(gap: 8px, align: center) {
-                image(src: "images/itch.svg", alt: "itch.io") {
+                image(src: "images/itch.png", alt: "itch.io") {
                     style {
                         width: 18px
                         height: 18px

@@ -59,7 +59,7 @@ export component ContactPage(tick: Int) {
                         padding: 28px
                     }
                     row(gap: 8px, align: center) {
-                        image(src: "images/discord.svg", alt: "Discord") {
+                        image(src: "images/discord.png", alt: "Discord") {
                             style {
                                 width: 22px
                                 height: 22px
@@ -91,7 +91,7 @@ export component ContactPage(tick: Int) {
                         padding: 28px
                     }
                     row(gap: 8px, align: center) {
-                        image(src: "images/roblox.svg", alt: "Roblox") {
+                        image(src: "images/roblox.png", alt: "Roblox") {
                             style {
                                 width: 22px
                                 height: 22px
@@ -141,7 +141,7 @@ export component ContactPage(tick: Int) {
                             padding: 28px
                         }
                         row(gap: 8px, align: center) {
-                            image(src: "images/creator-store.svg", alt: "Creator Store") {
+                            image(src: "images/creator-store.png", alt: "Creator Store") {
                                 style {
                                     width: 22px
                                     height: 22px

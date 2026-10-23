@@ -152,7 +152,7 @@ export component WorkCard(work: Work) {
                         shrink: 0
                     }
                 }
-                ToolTag(tool: work.tool)
+                ToolIcons(tool: work.tool)
             }
         }
     }
@@ -265,35 +265,21 @@ export component Lightbox(list: [Work], id: Int) {
     }
 }
 
-component ToolTag(tool: String) {
+component ToolIcons(tool: String) {
     row(gap: 6px, align: center) {
-        style {
-            font: "Inter", "Segoe UI", Arial, sans-serif
-            size: 11px
-            weight: 600
-            padding: 4px 7px
-            color: #e8e6ef
-            background: #24212e
-            border: 1px solid #3a3845
-            radius: 3px
-            shrink: 0
+        image(src: "images/roblox-studio.png", alt: "Roblox Studio") {
+            style {
+                width: 18px
+                height: 18px
+            }
         }
         if tool == "Figma" {
-            image(src: "images/figma.svg", alt: "Figma") {
+            image(src: "images/figma.png", alt: "Figma") {
                 style {
-                    width: 13px
-                    height: 13px
+                    width: 18px
+                    height: 18px
                 }
             }
-            span("Figma")
-        } else {
-            image(src: "images/roblox-studio.svg", alt: "Roblox Studio") {
-                style {
-                    width: 13px
-                    height: 13px
-                }
-            }
-            span("Studio")
         }
     }
 }
