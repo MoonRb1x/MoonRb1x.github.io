@@ -1,3 +1,3 @@
 // Starts the VCWL application on this page. Identical for every VCWL app.
-import { boot } from "./vcwl.js?v=2947e2d-measurefix";
+import { boot } from "./vcwl.js?v=workcards-avatar-20261024";
 boot();
