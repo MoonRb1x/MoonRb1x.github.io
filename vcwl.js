@@ -1362,7 +1362,7 @@ export async function boot(doc = document) {
   doc.body.append(canvas);
   let host;
   try {
-    const [app, render] = await Promise.all([compile(new URL("app.wasm?v=workcards-avatar-20261024", import.meta.url)), compile(new URL("render.wasm?v=workcards-avatar-20261024", import.meta.url))]);
+    const [app, render] = await Promise.all([compile(new URL("app.wasm?v=masonry-20261024", import.meta.url)), compile(new URL("render.wasm?v=masonry-20261024", import.meta.url))]);
     win.performance.mark?.("vcwl:compiled");
     const config = WebAssembly.Module.customSections(app, "vcwl.config")[0];
     if (config) cfg = JSON.parse(decoder.decode(config));
