@@ -91,7 +91,9 @@ component Hero(tick: Int) {
                 padding: 40px 16px 70px
                 text-align: center
             }
-            Avatar(tick: tick, tall: 190)
+            Selected(size: "136 × 190") {
+                AvatarFull(avatar_width: 136, avatar_height: 190)
+            }
             Measure(px: "24")
             Selected(size: "560 × Hug") {
                 column(gap: 16px, align: center) {
@@ -155,14 +157,15 @@ component Numbers {
     Frame(name: "Numbers", anchor: "numbers", size: "Auto layout") {
         grid(gap: 0) {
             style {
-                columns: 4
-                when viewport < 800px {
+                columns: 5
+                when viewport < 900px {
                     columns: 2
                 }
             }
             Stat(value: "{works().len()}", label: "UIs on show")
             Stat(value: "2019", label: "On Roblox since")
-            Stat(value: "When useful", label: "Figma prototypes")
+            Stat(value: "Figma", label: "Main Tool")
+            Stat(value: "4 years", label: "UI Experience")
             Stat(value: "{items().len()}", label: "Creator Store release")
         }
     }

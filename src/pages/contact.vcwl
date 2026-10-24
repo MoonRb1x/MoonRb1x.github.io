@@ -36,12 +36,7 @@ export component ContactPage(tick: Int) {
             }
             column(align: center, justify: center) {
                 Selected(size: "172 × 240") {
-                    box {
-                        style {
-                            padding: 24px 40px
-                        }
-                        Avatar(tick: tick, tall: 240)
-                    }
+                    AvatarFull(avatar_width: 172, avatar_height: 240)
                 }
             }
             }
@@ -141,7 +136,7 @@ export component ContactPage(tick: Int) {
                             padding: 28px
                         }
                         row(gap: 8px, align: center) {
-                            image(src: "images/creator-store.png", alt: "Creator Store") {
+                            image(src: "images/roblox-studio.png", alt: "Roblox Studio") {
                                 style {
                                     width: 22px
                                     height: 22px

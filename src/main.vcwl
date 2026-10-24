@@ -5,6 +5,7 @@ import "@web"
 import "./theme.vcwl"
 import "./data.vcwl"
 import "./glitch.vcwl"
+import "./avatar.vcwl"
 import "./pages/home.vcwl"
 import "./pages/work.vcwl"
 import "./pages/store.vcwl"
@@ -128,14 +129,7 @@ component Nav {
                     open = false
                 }
                 row(gap: 10px, align: center) {
-                    image(src: "images/avatar.png", alt: "") {
-                        style {
-                            width: 30px
-                            height: 30px
-                            radius: 6px
-                            background: #2a2140
-                        }
-                    }
+                    AvatarMark(size: 30, outlined: false)
                     span("Drafts  /") {
                         style {
                             color: #9b98a8
@@ -167,15 +161,7 @@ component Nav {
                         display: none
                     }
                 }
-                image(src: "images/avatar.png", alt: "") {
-                    style {
-                        width: 28px
-                        height: 28px
-                        radius: 14px
-                        border: 2px solid #ff2bd6
-                        background: #2a2140
-                    }
-                }
+                AvatarMark(size: 28, outlined: true)
                 link("Commission", to: "/contact") {
                     style {
                         font: "Inter", "Segoe UI", Arial, sans-serif
