@@ -1,11 +1,19 @@
 export component AvatarFull(avatar_width: Int, avatar_height: Int) {
-    image(src: "images/avatar-full.png", alt: "MoonRb1x's full Roblox avatar") {
-        style {
-            display: block
-            fit: contain
-        }
+    box {
         style bind width: avatar_width px
         style bind height: avatar_height px
+        style {
+            display: block
+            position: relative
+        }
+        image(src: "images/avatar-full.png", alt: "MoonRb1x's full Roblox avatar") {
+            style {
+                display: block
+                width: 100%
+                height: 100%
+                fit: contain
+            }
+        }
     }
 }
 
