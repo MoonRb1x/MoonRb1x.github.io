@@ -1,3 +1,3 @@
 // Starts the VCWL application on this page. Identical for every VCWL app.
-import { boot } from "./vcwl.js?v=fe4cc1b6";
+import { boot } from "./vcwl.js?v=2947e2d-measurefix";
 boot();

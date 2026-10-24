@@ -83,7 +83,7 @@ component Hero(tick: Int) {
             }
             Cursor(tick: tick)
         }
-        column(gap: 0, align: center, justify: center) {
+        column(gap: 44px, align: center, justify: center) {
             style {
                 position: relative
                 z: 2
@@ -94,7 +94,6 @@ component Hero(tick: Int) {
             Selected(size: "136 × 190") {
                 AvatarFull(avatar_width: 136, avatar_height: 190)
             }
-            Measure(px: "24")
             Selected(size: "560 × Hug") {
                 column(gap: 16px, align: center) {
                     style {
